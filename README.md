@@ -13,56 +13,56 @@ Provide the physics engine for minecraft entities
 ## Usage
 
 ```js
-const { Physics, PlayerState } = require('prismarine-physics')
-const { Vec3 } = require('vec3')
+const { Physics, PlayerState } = require("prismarine-physics")
+const { Vec3 } = require("vec3")
 
-const mcData = require('minecraft-data')('1.13.2')
-const Block = require('prismarine-block')('1.13.2')
+const mcData = require("minecraft-data")("1.13.2")
+const Block = require("prismarine-block")("1.13.2")
 
 const physics = Physics(mcData, world)
 const controls = {
-  forward: false,
-  back: false,
-  left: false,
-  right: false,
-  jump: false,
-  sprint: false,
-  sneak: false
+	forward: false,
+	back: false,
+	left: false,
+	right: false,
+	jump: false,
+	sprint: false,
+	sneak: false,
 }
 const player = {
-    entity: {
-      position: pos,
-      velocity: new Vec3(0, 0, 0),
-      onGround: false,
-      isInWater: false,
-      isInLava: false,
-      isInWeb: false,
-      isCollidedHorizontally: false,
-      isCollidedVertically: false,
-      elytraFlying: false,
-      yaw: 0,
-      pitch: 0
-    },
-    jumpTicks: 0,
-    jumpQueued: false,
-    fireworkRocketDuration: 0
-  }
+	entity: {
+		position: pos,
+		velocity: new Vec3(0, 0, 0),
+		onGround: false,
+		isInWater: false,
+		isInLava: false,
+		isInWeb: false,
+		isCollidedHorizontally: false,
+		isCollidedVertically: false,
+		elytraFlying: false,
+		yaw: 0,
+		pitch: 0,
+	},
+	jumpTicks: 0,
+	jumpQueued: false,
+	fireworkRocketDuration: 0,
+}
 const playerState = new PlayerState(player, controls)
 
 while (!player.entity.onGround) {
-  // simulate 1 tick of player physic, then apply the result to the player
-  physics.simulatePlayer(playerState, world).apply(player)
+	// simulate 1 tick of player physic, then apply the result to the player
+	physics.simulatePlayer(playerState, world).apply(player)
 }
 ```
 
 See `examples/` for more.
-
 
 ## API
 
 ### Physics
 
 #### simulatePlayer(playerState, world)
+
 - playerState : instance of the PlayerState class
 - world : interface with a function `getBlock(position)` returning the prismarine-block at the given position
 
@@ -71,6 +71,7 @@ See `examples/` for more.
 A player state is an object containing the properties:
 
 Read / Write properties:
+
 - pos : position (vec3) of the player entity
 - vel : velocity (vec3) of the player entity
 - onGround : (boolean) is the player touching ground ?
@@ -85,6 +86,7 @@ Read / Write properties:
 - fireworkRocketDuration : (number) how many ticks of firework boost are remaining ?
 
 Read only properties:
+
 - yaw : (float) the yaw angle, in radians, of the player entity
 - pitch: (float) the pitch angle, in radians, of the player entity
 - control : (object) control states vector with properties:
