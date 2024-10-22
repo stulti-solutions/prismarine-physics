@@ -410,21 +410,21 @@ function Physics(mcData, world) {
 	}
 
 	function applyHeading(entity, strafe, forward, multiplier) {
-		let speed = Math.sqrt(strafe * strafe + forward * forward)
-		if (speed < 0.01) return new Vec3(0, 0, 0)
+		let friction = Math.hypot(strafe, forward)
+		if (friction < 0.01) {
+            return new Vec3(0, 0, 0)
+        }
 
-		speed = multiplier / Math.max(speed, 1)
+		friction = multiplier / Math.max(friction, 1)
 
-		strafe *= speed
-		forward *= speed
+        forward *= friction
+		strafe *= friction
 
-		const yaw = Math.PI - entity.yaw
-		const sin = Math.sin(yaw)
-		const cos = Math.cos(yaw)
+		const sin = Math.sin(Math.PI - entity.yaw)
+		const cos = Math.cos(Math.PI - entity.yaw)
 
-		const vel = entity.vel
-		vel.x -= strafe * cos + forward * sin
-		vel.z += forward * cos - strafe * sin
+		entity.vel.x -= strafe * cos + forward * sin
+		entity.vel.z += forward * cos - strafe * sin
 	}
 
 	function isOnLadder(world, pos) {
@@ -520,6 +520,7 @@ function Physics(mcData, world) {
 				if (entity.attributes && entity.attributes[physics.movementSpeedAttribute]) {
 					// Use server-side player attributes
 					playerSpeedAttribute = entity.attributes[physics.movementSpeedAttribute]
+                    playerSpeedAttribute.value = physics.playerSpeed
 				} else {
 					// Create an attribute if the player does not have it
 					playerSpeedAttribute = attribute.createAttributeValue(physics.playerSpeed)
@@ -539,7 +540,7 @@ function Physics(mcData, world) {
 				// Calculate what the speed is (0.1 if no modification)
 				const attributeSpeed = attribute.getAttributeValue(playerSpeedAttribute)
 				inertia = (blockSlipperiness[blockUnder.type] || physics.defaultSlipperiness) * 0.91
-				acceleration = attributeSpeed * (0.21600002 / (inertia * inertia * inertia))
+				acceleration = attributeSpeed * (0.16277136 / (inertia * inertia * inertia))
 				if (acceleration < 0) acceleration = 0 // acceleration should not be negative
 			} else {
 				acceleration = physics.airborneAcceleration
@@ -574,6 +575,7 @@ function Physics(mcData, world) {
 			} else {
 				vel.y -= physics.gravity * gravityMultiplier
 			}
+
 			vel.y *= physics.airdrag
 			vel.x *= inertia
 			vel.z *= inertia
